@@ -83,10 +83,17 @@ def build_sam2_camera_predictor(
     mode="eval",
     hydra_overrides_extra=[],
     apply_postprocessing=True,
+    vos_optimized=False,
 ):
     hydra_overrides = [
         "++model._target_=sam2.sam2_camera_predictor.SAM2CameraPredictor",
     ]
+
+    if vos_optimized:
+        hydra_overrides = [
+            "++model._target_=sam2.sam2_camera_predictor.SAM2CameraPredictorVOS",
+        ]
+
     if apply_postprocessing:
         hydra_overrides_extra = hydra_overrides_extra.copy()
         hydra_overrides_extra += [
@@ -110,6 +117,7 @@ def build_sam2_camera_predictor(
     if mode == "eval":
         model.eval()
     return model
+
 
 def _load_checkpoint(model, ckpt_path):
     if ckpt_path is not None:
